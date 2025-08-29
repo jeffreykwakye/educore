@@ -1,0 +1,40 @@
+Proprietary License
+
+Effective Date: 29-08-2025
+
+This license ("License") is a legal agreement between you, the user, and Jeffrey (the "Licensor") for the use of the EduCore software and its related services ("Software").
+
+**1. Grant of License**
+
+The Licensor hereby grants you a limited, non-exclusive, non-transferable, and revocable license to access and use the Software as a service, solely for your internal business operations.
+
+**2. Restrictions**
+
+You may not, and may not permit others to:
+(a) **Copy or Reproduce:** Copy, reproduce, or duplicate the Software or its source code, in whole or in part.
+(b) **Modify or Create Derivative Works:** Modify, adapt, translate, or create derivative works of the Software.
+(c) **Reverse Engineer:** Reverse engineer, decompile, or disassemble the Software.
+(d) **Redistribute or Resell:** Rent, lease, lend, sell, sublicense, or otherwise distribute the Software or its services to any third party.
+(e) **Bypass Security:** Attempt to bypass or circumvent any technical measures used to protect the Software.
+
+**3. Intellectual Property Rights**
+
+All rights, title, and interest in and to the Software, including all intellectual property rights, are and shall remain the exclusive property of the Licensor. This License does not grant you any ownership rights in the Software.
+
+**4. Disclaimer of Warranty**
+
+THE SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. THE LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE FROM VIRUSES OR OTHER HARMFUL COMPONENTS.
+
+**5. Limitation of Liability**
+
+IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY DAMAGES (INCLUDING, WITHOUT LIMITATION, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+**6. Termination**
+
+This License is effective until terminated. Your rights under this License will terminate automatically without notice if you fail to comply with any of its terms.
+
+**7. Governing Law**
+
+This License shall be governed by the laws of Ghana, without regard to its conflict of law principles.
+
+By using this Software, you agree to be bound by the terms of this License.
