@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Define the root directory of the application
+define('APP_ROOT', dirname(__DIR__));
 
+require APP_ROOT . '/vendor/autoload.php';
+
+// Load environment variables from .env file
+$dotenv = Dotenv\Dotenv::createImmutable(APP_ROOT);
+$dotenv->load();
 
 use Jeffrey\Educore\Core\AppLogger;
 use Jeffrey\Educore\Core\Database;
 use Jeffrey\Educore\Core\Router;
 use Jeffrey\Educore\Utils\Utils;
-
 
 // Start logging system
 $logger = AppLogger::getInstance()->getLogger();

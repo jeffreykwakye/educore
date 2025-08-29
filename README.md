@@ -28,53 +28,66 @@ EduCore is a multi-tenant School Management SaaS designed to streamline administ
 
 /educore
 |-- /app
-|   |-- /controllers
+|   |-- /config               # Application configuration files
+|   |   |-- database.php
+|   |
+|   |-- /controllers          # Handles request logic and interacts with models/views
+|   |   |-- AuthController.php      <-- New
+|   |   |-- DashboardController.php   <-- New (placeholder)
 |   |   |-- HomeController.php
 |   |   |-- SchoolController.php
-|   |-- /core
+|   |   |-- UserController.php
+|   |
+|   |-- /core                 # Core framework components
 |   |   |-- AppLogger.php
 |   |   |-- Database.php
+|   |   |-- Model.php
 |   |   |-- Router.php
-|   |   |-- setup.php
-|   |-- /middleware
+|   |
+|   |-- /middleware           # Middleware for request filtering
 |   |   |-- /School
 |   |   |   |-- SchoolValidationMiddleware.php
-|   |-- /routes
+|   |   |-- /User
+|   |   |   |-- AuthMiddleware.php        <-- New
+|   |   |   |-- AutoLogoutMiddleware.php  <-- New
+|   |   |   |-- LoginValidationMiddleware.php
+|   |
+|   |-- /models               # Handles database interactions
+|   |   |-- LoginAttemptModel.php   <-- New
+|   |   |-- UserModel.php
+|   |
+|   |-- /routes               # Defines application routes
 |   |   |-- routes.php
-|   |-- /utils
-|   |   |-- Utils.php
-|
-|-- /config
-|   |-- .env
-|   |-- database.php
 |
 |-- /database
-|   |-- schema.sql
+|   |-- /migrations           # For future database migrations
+|   |-- /seeders              # For future database seeders
+|   |-- schema.sql            # Database schema
 |
-|-- /public
-|   |-- .htaccess
-|   |-- index.php
+|-- /public                   # Web-accessible files
 |   |-- /css
 |   |-- /js
-|   |-- /images
+|   |   |-- /school
+|   |   |   |-- register.js
+|   |   |-- /user
+|   |   |   |-- login.js          <-- New
+|   |-- index.php             # The application's entry point
+|   |-- .htaccess             # Apache rewrite rules
 |
 |-- /resources
-|   |-- /views
+|   |-- /views                # HTML view files
+|   |   |-- login.html            <-- New
 |   |   |-- register.html
+|   |   |-- welcome.html
 |
-|-- /storage
-|   |-- /logs
+|-- /vendor                   # Composer dependencies
+|   |-- ...
 |
-|-- /tests
-|   |-- test_connection.php
-|
-|-- /vendor
-|
-|-- .gitignore
-|-- composer.json
-|-- composer.lock
-|-- LICENSE.txt
-|-- README.md
+|-- .env.example              # Example environment variables
+|-- .gitignore                # Specifies intentionally untracked files to ignore
+|-- composer.json             # Composer dependencies file
+|-- composer.lock             # Composer lock file
+|-- README.md                 # Project documentation
 
 ````
 
