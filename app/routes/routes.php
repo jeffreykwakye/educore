@@ -5,8 +5,11 @@ use Jeffrey\Educore\Controllers\HomeController;
 use Jeffrey\Educore\Controllers\SchoolController;
 use Jeffrey\Educore\Controllers\UserController;
 use Jeffrey\Educore\Controllers\AuthController;
+use Jeffrey\Educore\Controllers\DashboardController;
 use Jeffrey\Educore\Middleware\School\SchoolValidationMiddleware;
 use Jeffrey\Educore\Middleware\User\LoginValidationMiddleware;
+use Jeffrey\Educore\Middleware\User\AuthMiddleware;
+
 
 // Public routes
 $r->addRoute('GET', '/', [
@@ -20,6 +23,16 @@ $r->addRoute('GET', '/register', [
 $r->addRoute('GET', '/login', [
     'handler' => [AuthController::class, 'showLoginForm']
 ]);
+
+
+
+// Protected routes
+$r->addRoute('GET', '/dashboard', [
+    'handler' => [DashboardController::class, 'showDashboard'],
+    'middleware' => [AuthMiddleware::class] // Protect this route
+]);
+
+
 
 // API routes
 $r->addRoute('POST', '/register', [
