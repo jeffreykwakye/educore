@@ -12,22 +12,20 @@ class SchoolController
 {
     private $schoolModel;
 
+    
     public function __construct()
     {
         $this->schoolModel = new SchoolModel();
     }
 
+
     public function showRegistrationForm()
     {
-        $viewPath = __DIR__ . '/../../resources/views/register.html';
-        
-        if (file_exists($viewPath)) {
-            require $viewPath;
-        } else {
-            http_response_code(500);
-            echo "Error: Registration form not found.";
-        }
+        // Use the reusable loadView method from the Utils class
+        $viewPath = APP_ROOT . '/resources/views/register.html';
+        Utils::loadView($viewPath);
     }
+
 
     public function processRegistration()
     {

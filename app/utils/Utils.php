@@ -24,4 +24,25 @@ class Utils
         }
         return false;
     }
+
+
+    /**
+     * Loads a view from the specified path and includes it.
+     *
+     * @param string $viewPath The absolute path to the view file.
+     * @param array $data An associative array of data to be passed to the view.
+     * @return void
+     */
+    public static function loadView(string $viewPath, array $data = []): void
+    {
+        if (file_exists($viewPath)) {
+            // Extract the data array to make variables available in the view
+            extract($data);
+            require $viewPath;
+        } else {
+            http_response_code(404);
+            echo "Error: View not found at {$viewPath}.";
+        }
+    }
+
 }

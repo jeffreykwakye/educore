@@ -5,6 +5,7 @@ namespace Jeffrey\Educore\Controllers;
 
 use Jeffrey\Educore\Core\AppLogger;
 use Jeffrey\Educore\Models\UserModel;
+use Jeffrey\Educore\Utils\Utils;
 
 class AuthController
 {
@@ -17,17 +18,14 @@ class AuthController
         $this->logger = AppLogger::getInstance()->getLogger();
     }
 
+    
     public function showLoginForm()
     {
-        $viewPath = __DIR__ . '/../../resources/views/login.html';
-        
-        if (file_exists($viewPath)) {
-            require $viewPath;
-        } else {
-            http_response_code(500);
-            echo "Error: Login form not found.";
-        }
+        // Use the reusable loadView method from the Utils class
+        $viewPath = APP_ROOT . '/resources/views/login.html';
+        Utils::loadView($viewPath);
     }
+
 
     public function processLogin()
     {
@@ -35,7 +33,7 @@ class AuthController
         $password = $_POST['password'];
         $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-        $user = $this->userModel->findByPhoneNumberWithRole($phoneNumber);
+        $user = $this->userModel->findByPhoneNumber($phoneNumber);
 
         if ($user) {
             $lockedUntil = $user['locked_until'] ? strtotime($user['locked_until']) : 0;
@@ -51,14 +49,17 @@ class AuthController
             // Success: log attempt and clear previous failures
             $this->logLoginAttempt($user['id'], $ipAddress, true);
 
+            // Fetch all roles for the user
+            $userRoles = $this->userModel->getAllRolesForUser($user['id']);
+
             // Start a session and store user data
             session_start();
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role_name'] = $user['role_name'];
+            $_SESSION['user_roles'] = $userRoles; // Store the array of roles
             $_SESSION['last_activity'] = time();
             $_SESSION['logged_in'] = true;
 
-            $this->logger->info("User {$user['id']} logged in successfully with role: {$user['role_name']}.");
+            $this->logger->info("User {$user['id']} logged in successfully with roles: " . implode(', ', $userRoles));
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'message' => 'Login successful!']);
             return;
