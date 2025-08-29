@@ -3,12 +3,20 @@ declare(strict_types=1);
 
 namespace Jeffrey\Educore\Controllers;
 
-use Jeffrey\Educore\Core\AppLogger;
 use Jeffrey\Educore\Core\Database;
+use Jeffrey\Educore\Core\AppLogger;
+use Jeffrey\Educore\Models\SchoolModel; 
 use Jeffrey\Educore\Utils\Utils;
 
 class SchoolController
 {
+    private $schoolModel;
+
+    public function __construct()
+    {
+        $this->schoolModel = new SchoolModel();
+    }
+
     public function showRegistrationForm()
     {
         $viewPath = __DIR__ . '/../../resources/views/register.html';
@@ -33,9 +41,8 @@ class SchoolController
         $db->beginTransaction();
 
         try {
-            $stmt = $db->prepare("SELECT COUNT(*) FROM schools WHERE phone_number = ?");
-            $stmt->execute([$phoneNumber]);
-            if ($stmt->fetchColumn() > 0) {
+            // Check for a duplicate phone number using the SchoolModel
+            if ($this->schoolModel->findBy('phone_number', $phoneNumber)) {
                 $logger->error("Registration failed: Phone number already exists.");
                 
                 header('Content-Type: application/json');
@@ -46,12 +53,22 @@ class SchoolController
 
             $slug = Utils::generateSlug($schoolName);
             
-            $sql = "INSERT INTO schools (name, slug, phone_number, address) VALUES (?, ?, ?, ?)";
-            $stmt = $db->prepare($sql);
-            $stmt->execute([$schoolName, $slug, $phoneNumber, $address]);
+            // Prepare data for the insert operation
+            $schoolData = [
+                'name' => $schoolName,
+                'slug' => $slug,
+                'phone_number' => $phoneNumber,
+                'address' => $address
+            ];
+
+            // Insert into the schools table using the SchoolModel
+            if (!$this->schoolModel->create($schoolData)) {
+                throw new \Exception("Failed to insert school data.");
+            }
 
             $schoolId = $db->lastInsertId();
 
+            // Insert into school_branding table
             $sqlBranding = "INSERT INTO school_branding (school_id) VALUES (?)";
             $stmtBranding = $db->prepare($sqlBranding);
             $stmtBranding->execute([$schoolId]);
@@ -62,7 +79,7 @@ class SchoolController
             header('Content-Type: application/json');
             echo json_encode(['success' => true, 'message' => 'School registered successfully!']);
 
-        } catch (\PDOException $e) {
+        } catch (\Exception | \PDOException $e) {
             $db->rollBack();
             $logger->error("Database error during registration: " . $e->getMessage());
 
@@ -70,5 +87,4 @@ class SchoolController
             echo json_encode(['success' => false, 'message' => 'An error occurred during registration.']);
         }
     }
-
 }
