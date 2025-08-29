@@ -10,10 +10,12 @@ abstract class Model
 {
     private $db;
 
+    
     public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
     }
+
 
     /**
      * Executes a raw SQL query with optional parameters.
@@ -33,6 +35,7 @@ abstract class Model
             return false;
         }
     }
+
 
     /**
      * Inserts a record into the specified table.
@@ -56,6 +59,7 @@ abstract class Model
             return false;
         }
     }
+
 
     /**
      * Fetches a single record based on a condition.
@@ -83,6 +87,7 @@ abstract class Model
             return false;
         }
     }
+
 
     /**
      * Fetches all records from a table that match a condition.
@@ -139,6 +144,30 @@ abstract class Model
             AppLogger::getInstance()->getLogger()->error("Delete failed: " . $e->getMessage());
             return false;
         }
+    }
+
+
+    /**
+     * Updates a record in a table by its ID.
+     *
+     * @param string $table The table name.
+     * @param int $id The ID of the record to update.
+     * @param array $data The associative array of data to update.
+     * @return bool True on success, false on failure.
+     */
+    public function update(string $table, int $id, array $data): bool
+    {
+        $setClause = '';
+        foreach ($data as $key => $value) {
+            $setClause .= "{$key} = :{$key}, ";
+        }
+        $setClause = rtrim($setClause, ', ');
+        
+        $sql = "UPDATE {$table} SET {$setClause} WHERE id = :id";
+        $data['id'] = $id;
+        
+        $stmt = $this->query($sql, $data);
+        return $stmt ? true : false;
     }
 
 }

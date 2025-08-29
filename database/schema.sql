@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
     `user_id` INT,
     `role_id` INT,
     PRIMARY KEY (`user_id`, `role_id`),
-    FOREIGN KEY (`user_id`) REFERENCES users(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`role_id`) REFERENCES roles(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- role_permissions (pivot table for many-to-many relationship)
@@ -68,6 +68,18 @@ CREATE TABLE IF NOT EXISTS `role_permissions` (
     `role_id` INT,
     `permission_id` INT,
     PRIMARY KEY (`role_id`, `permission_id`),
-    FOREIGN KEY (`role_id`) REFERENCES roles(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`permission_id`) REFERENCES permissions(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- login_attempts table
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `ip_address` VARCHAR(45) NOT NULL,
+    `attempt_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `was_successful` BOOLEAN NOT NULL,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `users` ADD COLUMN `locked_until` TIMESTAMP NULL DEFAULT NULL;

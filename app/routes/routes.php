@@ -1,15 +1,37 @@
 <?php
 declare(strict_types=1);
 
-use FastRoute\RouteCollector;
+use Jeffrey\Educore\Controllers\HomeController;
+use Jeffrey\Educore\Controllers\SchoolController;
+use Jeffrey\Educore\Controllers\UserController;
+use Jeffrey\Educore\Controllers\AuthController;
 use Jeffrey\Educore\Middleware\School\SchoolValidationMiddleware;
+use Jeffrey\Educore\Middleware\User\LoginValidationMiddleware;
 
-// Define your routes here
-// This file will be included by the Router class.
+// Public routes
+$r->addRoute('GET', '/', [
+    'handler' => [HomeController::class, 'index']
+]);
 
-$r->addRoute('GET', '/', 'HomeController@index');
-$r->addRoute('GET', '/register', 'SchoolController@showRegistrationForm');
+$r->addRoute('GET', '/register', [
+    'handler' => [SchoolController::class, 'showRegistrationForm']
+]);
+
+$r->addRoute('GET', '/login', [
+    'handler' => [AuthController::class, 'showLoginForm']
+]);
+
+// API routes
 $r->addRoute('POST', '/register', [
-    'handler' => 'SchoolController@processRegistration',
+    'handler' => [SchoolController::class, 'processRegistration'],
     'middleware' => [SchoolValidationMiddleware::class]
+]);
+
+$r->addRoute('POST', '/login', [
+    'handler' => [AuthController::class, 'processLogin'],
+    'middleware' => [LoginValidationMiddleware::class]
+]);
+
+$r->addRoute('POST', '/logout', [
+    'handler' => [AuthController::class, 'logout'],
 ]);
