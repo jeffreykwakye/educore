@@ -22,7 +22,7 @@ class AuthController
     public function showLoginForm()
     {
         // Use the reusable loadView method from the Utils class
-        $viewPath = APP_ROOT . '/resources/views/login.html';
+        $viewPath = APP_ROOT . '/resources/views/auth/user/login.html';
         Utils::loadView($viewPath);
     }
 

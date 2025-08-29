@@ -22,7 +22,7 @@ class SchoolController
     public function showRegistrationForm()
     {
         // Use the reusable loadView method from the Utils class
-        $viewPath = APP_ROOT . '/resources/views/register.html';
+        $viewPath = APP_ROOT . '/resources/views/auth/school/register.html';
         Utils::loadView($viewPath);
     }
 
