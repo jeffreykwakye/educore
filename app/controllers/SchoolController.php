@@ -7,7 +7,17 @@ class SchoolController
 {
     public function showRegistrationForm()
     {
-        echo "This is the school registration form.";
+        // Path to the registration form HTML in the new location
+        $viewPath = __DIR__ . '/../../resources/views/register.html';
+        
+        // Check if the file exists and include it
+        if (file_exists($viewPath)) {
+            require $viewPath;
+        } else {
+            // Handle the case where the view file is missing
+            http_response_code(500);
+            echo "Error: Registration form not found.";
+        }
     }
 
     public function processRegistration()

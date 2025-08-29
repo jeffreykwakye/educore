@@ -28,27 +28,48 @@ EduCore is a multi-tenant School Management SaaS designed to streamline administ
 
 /educore
 |-- /app
+|   |-- /controllers
+|   |   |-- HomeController.php
+|   |   |-- SchoolController.php
 |   |-- /core
-|       |-- AppLogger.php
-|       |-- Database.php
-|       |-- setup.php
+|   |   |-- AppLogger.php
+|   |   |-- Database.php
+|   |   |-- Router.php
+|   |   |-- setup.php
+|   |-- /routes
+|   |   |-- routes.php
+|
 |-- /config
 |   |-- .env
 |   |-- database.php
+|
 |-- /database
 |   |-- schema.sql
+|
 |-- /public
+|   |-- .htaccess
 |   |-- index.php
+|   |-- /css
+|   |-- /js
+|   |-- /images
+|
+|-- /resources
+|   |-- /views
+|   |   |-- register.html
+|
 |-- /storage
 |   |-- /logs
+|
 |-- /tests
-|   |-- test\_connection.php
+|   |-- test_connection.php
+|
 |-- /vendor
-|-- .htaccess
+|
+|-- .gitignore
 |-- composer.json
 |-- composer.lock
-|-- README.md
 |-- LICENSE.txt
+|-- README.md
 
 ````
 

@@ -1,10 +1,12 @@
 <?php
+
 declare(strict_types=1);
+
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use Jeffrey\Educore\Core\AppLogger;
 use Jeffrey\Educore\Core\Database;
 use Jeffrey\Educore\Core\Router;
-
 
 // Start logging system
 $logger = AppLogger::getInstance()->getLogger();
@@ -20,7 +22,7 @@ try {
 }
 
 // Instantiate our new Router class, pointing to the routes.php file
-$router = new Router(__DIR__ . '/../app/core/routes/routes.php');
+$router = new Router(__DIR__ . '/../app/routes/routes.php');
 
 // Fetch method and URI from the request
 $httpMethod = $_SERVER['REQUEST_METHOD'];
