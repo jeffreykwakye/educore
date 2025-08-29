@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+
 use Jeffrey\Educore\Core\AppLogger;
 use Jeffrey\Educore\Core\Database;
 use Jeffrey\Educore\Core\Router;
+use Jeffrey\Educore\Utils\Utils;
+
 
 // Start logging system
 $logger = AppLogger::getInstance()->getLogger();

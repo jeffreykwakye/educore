@@ -36,8 +36,13 @@ EduCore is a multi-tenant School Management SaaS designed to streamline administ
 |   |   |-- Database.php
 |   |   |-- Router.php
 |   |   |-- setup.php
+|   |-- /middleware
+|   |   |-- /School
+|   |   |   |-- SchoolValidationMiddleware.php
 |   |-- /routes
 |   |   |-- routes.php
+|   |-- /utils
+|   |   |-- Utils.php
 |
 |-- /config
 |   |-- .env

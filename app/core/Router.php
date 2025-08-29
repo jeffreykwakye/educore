@@ -43,40 +43,62 @@ class Router
                 http_response_code(405);
                 echo "405 Method Not Allowed";
                 break;
-            case Dispatcher::FOUND:
-                // Dispatch to the controller
-                $handler = $routeInfo[1];
+             case Dispatcher::FOUND:
+                $routeHandler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                // Explode handler to get controller and method
-                list($controllerName, $method) = explode('@', $handler);
-                
-                // Add the namespace to the controller name
-                $controllerClass = "Jeffrey\\Educore\\Controllers\\{$controllerName}";
+                // Check if a middleware is defined
+                if (is_array($routeHandler) && isset($routeHandler['middleware'])) {
+                    $handler = $routeHandler['handler'];
+                    $middlewares = $routeHandler['middleware'];
+                    
+                    // Run the middleware stack
+                    $pipeline = array_reverse($middlewares);
+                    $next = function () use ($handler, $vars) {
+                        return $this->dispatchToController($handler, $vars);
+                    };
 
-                // Check if the controller class exists
-                if (!class_exists($controllerClass)) {
-                    // Log a warning and show an error page
-                    // We'll update this to a custom 500 page later
-                    http_response_code(500);
-                    echo "Internal Server Error: Controller not found.";
-                    return;
+                    foreach ($pipeline as $middleware) {
+                        $instance = new $middleware();
+                        $next = function () use ($instance, $next) {
+                            return $instance->handle($next);
+                        };
+                    }
+                    
+                    $next();
+
+                } else {
+                    // No middleware, dispatch directly to the controller
+                    $this->dispatchToController($routeHandler, $vars);
                 }
 
-                // Create an instance of the controller and call the method
-                $controller = new $controllerClass();
-                
-                // Check if the method exists
-                if (!method_exists($controller, $method)) {
-                     // Log a warning and show an error page
-                    http_response_code(500);
-                    echo "Internal Server Error: Method not found.";
-                    return;
-                }
-
-                // Call the controller method with the route variables
-                call_user_func_array([$controller, $method], $vars);
                 break;
         }
+    }
+
+
+    /**
+     * Dispatches the request to the controller method.
+     */
+    private function dispatchToController(string $handler, array $vars)
+    {
+        list($controllerName, $method) = explode('@', $handler);
+        $controllerClass = "Jeffrey\\Educore\\Controllers\\{$controllerName}";
+
+        if (!class_exists($controllerClass)) {
+            http_response_code(500);
+            echo "Internal Server Error: Controller not found.";
+            return;
+        }
+
+        $controller = new $controllerClass();
+        
+        if (!method_exists($controller, $method)) {
+            http_response_code(500);
+            echo "Internal Server Error: Method not found.";
+            return;
+        }
+
+        call_user_func_array([$controller, $method], $vars);
     }
 }
