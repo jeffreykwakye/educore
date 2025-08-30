@@ -20,7 +20,6 @@ class Router
 
     public function dispatch(string $httpMethod, string $uri)
     {
-        // Strip query string and decode URL
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
         }
@@ -30,20 +29,34 @@ class Router
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                // Handle 404 Not Found
                 http_response_code(404);
                 echo "404 Not Found";
                 break;
+
             case Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
                 http_response_code(405);
                 echo "405 Method Not Allowed";
                 break;
+
             case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
+                $rawHandler = $routeInfo[1];
                 $vars = $routeInfo[2];
-                $middleware = $handler['middleware'] ?? [];
-                $controllerHandler = $handler['handler'];
+
+                if (is_array($rawHandler) && isset($rawHandler['handler'])) {
+                    $middleware = $rawHandler['middleware'] ?? [];
+                    $controllerHandler = $rawHandler['handler'];
+                } else {
+                    $middleware = [];
+                    $controllerHandler = $rawHandler;
+                }
+
+                if (!is_string($controllerHandler) &&
+                    !(is_array($controllerHandler) && count($controllerHandler) === 2) &&
+                    !is_callable($controllerHandler)
+                ) {
+                    $this->handleError("Unsupported handler type.");
+                    return;
+                }
 
                 $this->handleWithMiddleware($middleware, function() use ($controllerHandler, $vars) {
                     $this->dispatchToController($controllerHandler, $vars);
@@ -54,27 +67,29 @@ class Router
 
     private function handleWithMiddleware(array $middleware, callable $callback)
     {
-        // Recursively handle middleware chain
         if (empty($middleware)) {
             $callback();
             return;
         }
 
-        $currentMiddlewareClass = array_shift($middleware);
-        $currentMiddleware = new $currentMiddlewareClass();
+        $chain = $callback;
+        foreach (array_reverse($middleware) as $middlewareClass) {
+            $chain = function () use ($middlewareClass, $chain) {
+                $middlewareInstance = new $middlewareClass();
+                if ($middlewareInstance->handle()) {
+                    $chain();
+                }
+            };
+        }
 
-        $currentMiddleware->handle(function() use ($middleware, $callback) {
-            $this->handleWithMiddleware($middleware, $callback);
-        });
+        $chain();
     }
 
     private function dispatchToController($handler, array $vars)
     {
-        // Handle the string format: 'Controller@method'
         if (is_string($handler) && strpos($handler, '@') !== false) {
             list($controllerName, $methodName) = explode('@', $handler, 2);
             $controllerClass = "Jeffrey\\Educore\\Controllers\\" . $controllerName;
-
             if (class_exists($controllerClass)) {
                 $controller = new $controllerClass();
                 if (method_exists($controller, $methodName)) {
@@ -85,12 +100,8 @@ class Router
             } else {
                 $this->handleError("Controller not found: {$controllerClass}");
             }
-        }
-        // Handle the new array format: [Controller::class, 'method']
-        elseif (is_array($handler) && count($handler) === 2) {
-            $controllerClass = $handler[0];
-            $methodName = $handler[1];
-
+        } elseif (is_array($handler) && count($handler) === 2) {
+            [$controllerClass, $methodName] = $handler;
             if (class_exists($controllerClass)) {
                 $controller = new $controllerClass();
                 if (method_exists($controller, $methodName)) {
@@ -101,6 +112,8 @@ class Router
             } else {
                 $this->handleError("Controller not found: {$controllerClass}");
             }
+        } elseif (is_callable($handler)) {
+            call_user_func_array($handler, $vars);
         } else {
             $this->handleError("Invalid handler format.");
         }

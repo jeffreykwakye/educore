@@ -6,7 +6,16 @@ use Jeffrey\Educore\Core\Model;
 
 class SchoolModel extends Model
 {
-    private $table = 'schools';
+    protected string $table = 'schools';
+
+
+    public function __construct()
+    {
+        parent::__construct();
+        // $this->table = 'schools';
+    }
+
+
 
     /**
      * Finds a school by a unique column (e.g., phone_number).
@@ -29,5 +38,15 @@ class SchoolModel extends Model
     public function create(array $data): bool
     {
         return $this->insert($this->table, $data);
+    }
+
+
+    /**
+     * Get all schools from the database.
+     * @return array
+     */
+    public function getAllSchools(): array
+    {
+        return $this->fetchAll($this->table);
     }
 }

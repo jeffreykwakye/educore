@@ -37,7 +37,10 @@ CREATE TABLE IF NOT EXISTS `users` (
     `first_name` VARCHAR(50),
     `last_name` VARCHAR(50),
     `other_names` VARCHAR(100),
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    `locked_until` TIMESTAMP NULL DEFAULT NULL,
+    `school_id` INT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`school_id`) REFERENCES `schools`(`school_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- roles table
@@ -81,5 +84,3 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
     `was_successful` BOOLEAN NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `users` ADD COLUMN `locked_until` TIMESTAMP NULL DEFAULT NULL;

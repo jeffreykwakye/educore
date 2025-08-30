@@ -2,29 +2,24 @@
 
 namespace Jeffrey\Educore\Middleware\User;
 
-use Jeffrey\Educore\Core\AppLogger;
+use Jeffrey\Educore\Middleware\Middleware;
 
-class AuthMiddleware
+class AuthMiddleware extends Middleware
 {
-    private $logger;
-
-    public function __construct()
-    {
-        $this->logger = AppLogger::getInstance()->getLogger();
-    }
-
-    public function handle($next)
+    public function handle(): bool
     {
         session_start();
 
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            $this->logger->warning("Unauthorized access attempt. User not logged in.");
-            
-            // Redirect to login page
-            header("Location: /login");
-            exit();
+        if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+            if (str_contains($_SERVER['REQUEST_URI'], '/api/')) {
+                http_response_code(401);
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Unauthorized. Please log in.']);
+            } else {
+                header("Location: /login");
+            }
+            return false;
         }
-
-        return $next();
+        return true;
     }
 }

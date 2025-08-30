@@ -6,7 +6,7 @@ use Jeffrey\Educore\Core\Model;
 
 class LoginAttemptModel extends Model
 {
-    private $table = 'login_attempts';
+    protected string $table = 'login_attempts';
 
     /**
      * Creates a new login attempt record.

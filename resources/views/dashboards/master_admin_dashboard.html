@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Admin Dashboard</title>
-    <style>body { font-family: sans-serif; text-align: center; margin-top: 50px; }</style>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .form-section { text-align: left; margin-top: 30px; }
+        .form-section input, .form-section select, .form-section button { width: 100%; padding: 10px; margin-bottom: 15px; }
+    </style>
 </head>
 <body>
-    <h1>Welcome, Master Admin!</h1>
-    <p>You have full control over the entire platform.</p>
-    <button id="logoutButton">Logout</button>
+    <div class="container">
+        <h1>Welcome, Master Admin!</h1>
+        <p>You have full control over the entire platform.</p>
+        <div class="form-section">
+            <h2>Create New User</h2>
+            <form id="createUserForm">
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <label for="role">Select Role:</label>
+                <select id="role" name="role" required></select>
+
+                <label for="schoolId">Select School:</label>
+                <select id="schoolId" name="schoolId"></select>
+                
+                <button type="submit">Create User</button>
+            </form>
+            <div id="message"></div>
+        </div>
+        <button id="logoutButton" style="margin-top: 20px;">Logout</button>
+    </div>
     <script src="/js/utils/logout.js"></script>
+    <script src="/js/user/create-user.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Jeffrey\Educore\Controllers;
+namespace Jeffrey\Educore\Controllers\Core;
 
 class HomeController
 {

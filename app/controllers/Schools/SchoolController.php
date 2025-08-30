@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Jeffrey\Educore\Controllers;
+namespace Jeffrey\Educore\Controllers\Schools;
 
 use Jeffrey\Educore\Core\Database;
 use Jeffrey\Educore\Core\AppLogger;

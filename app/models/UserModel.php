@@ -7,7 +7,14 @@ use PDO;
 
 class UserModel extends Model
 {
-    private $table = 'users';
+    protected string $table = 'users';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->table = 'users';
+    }
+
 
     /**
      * Finds a user record by a specific column.
@@ -58,9 +65,9 @@ class UserModel extends Model
      * Creates a new user record.
      *
      * @param array $data Associative array of user data.
-     * @return bool True on success, false on failure.
+     * @return int|false Last Insert ID on success, false on failure.
      */
-    public function create(array $data): bool
+    public function create(array $data): int|false
     {
         return $this->insert($this->table, $data);
     }
@@ -76,6 +83,23 @@ class UserModel extends Model
     public function updateById(int $id, array $data): bool
     {
         return parent::update($this->table, $id, $data);
+    }
+
+
+    /**
+     * Links a user to a specific role.
+     *
+     * @param int $userId The ID of the user.
+     * @param int $roleId The ID of the role.
+     * @return bool True on success, false on failure.
+     */
+    public function linkUserToRole(int $userId, int $roleId): bool
+    {
+        $data = [
+            'user_id' => $userId,
+            'role_id' => $roleId
+        ];
+        return $this->insert('user_roles', $data);
     }
 
 }

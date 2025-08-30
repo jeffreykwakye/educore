@@ -8,9 +8,10 @@ use PDOStatement;
 
 abstract class Model
 {
-    private $db;
+    protected PDO $db;
+    protected string $table;
 
-    
+
     public function __construct()
     {
         $this->db = Database::getInstance()->getConnection();
@@ -44,7 +45,7 @@ abstract class Model
      * @param array $data Associative array of column names and values.
      * @return bool True on success, false on failure.
      */
-    protected function insert(string $table, array $data): bool
+    protected function insert(string $table, array $data): int|false
     {
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
@@ -53,7 +54,10 @@ abstract class Model
 
         try {
             $stmt = $this->db->prepare($sql);
-            return $stmt->execute($data);
+            if ($stmt->execute($data)) {
+                return (int)$this->db->lastInsertId();
+            }
+            return false;
         } catch (PDOException $e) {
             AppLogger::getInstance()->getLogger()->error("Insert failed: " . $e->getMessage());
             return false;
@@ -168,6 +172,34 @@ abstract class Model
         
         $stmt = $this->query($sql, $data);
         return $stmt ? true : false;
+    }
+
+
+    /**
+     * Begins a transaction.
+     * @return bool
+     */
+    public function beginTransaction(): bool
+    {
+        return $this->db->beginTransaction();
+    }
+
+    /**
+     * Commits a transaction.
+     * @return bool
+     */
+    public function commit(): bool
+    {
+        return $this->db->commit();
+    }
+
+    /**
+     * Rolls back a transaction.
+     * @return bool
+     */
+    public function rollBack(): bool
+    {
+        return $this->db->rollBack();
     }
 
 }

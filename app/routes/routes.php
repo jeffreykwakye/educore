@@ -1,14 +1,22 @@
 <?php
 declare(strict_types=1);
 
-use Jeffrey\Educore\Controllers\HomeController;
-use Jeffrey\Educore\Controllers\SchoolController;
-use Jeffrey\Educore\Controllers\UserController;
-use Jeffrey\Educore\Controllers\AuthController;
-use Jeffrey\Educore\Controllers\DashboardController;
+
+use Jeffrey\Educore\Controllers\Core\HomeController;
+use Jeffrey\Educore\Controllers\Schools\SchoolController;
+use Jeffrey\Educore\Controllers\Auth\AuthController;
+use Jeffrey\Educore\Controllers\Core\DashboardController;
+use Jeffrey\Educore\Controllers\Auth\UserController;
+
+// Middleware
 use Jeffrey\Educore\Middleware\School\SchoolValidationMiddleware;
 use Jeffrey\Educore\Middleware\User\LoginValidationMiddleware;
 use Jeffrey\Educore\Middleware\User\AuthMiddleware;
+use Jeffrey\Educore\Middleware\User\AutoLogoutMiddleware;
+use Jeffrey\Educore\Middleware\User\Admin\MasterAdminMiddleware;
+
+use Jeffrey\Educore\Models\RoleModel;
+use Jeffrey\Educore\Models\SchoolModel;
 
 
 // Public routes
@@ -48,3 +56,68 @@ $r->addRoute('POST', '/login', [
 $r->addRoute('POST', '/logout', [
     'handler' => [AuthController::class, 'logout'],
 ]);
+
+
+
+// API routes for Master Admin
+$r->addRoute('GET', '/api/roles', [
+    'handler' => function() {
+        $roleModel = new RoleModel();
+        header('Content-Type: application/json');
+        echo json_encode($roleModel->getAllRoles());
+    },
+    'middleware' => [AuthMiddleware::class, MasterAdminMiddleware::class]
+]);
+
+$r->addRoute('GET', '/api/schools', [
+    'handler' => function() {
+        $schoolModel = new SchoolModel();
+        header('Content-Type: application/json');
+        echo json_encode($schoolModel->getAllSchools());
+    },
+    'middleware' => [AuthMiddleware::class, MasterAdminMiddleware::class]
+]);
+
+$r->addRoute('POST', '/api/users', [
+    'handler' => [UserController::class, 'processUserCreation'],
+    'middleware' => [AuthMiddleware::class, MasterAdminMiddleware::class]
+]);
+
+
+
+
+// Temporary Debugging Routes (Remove these later)
+// $r->addRoute('GET', '/debug-schools', [
+//     'handler' => function() {
+//         $schoolModel = new SchoolModel();
+//         $schools = $schoolModel->getAllSchools();
+//         header('Content-Type: application/json');
+//         echo json_encode($schools);
+//     }
+// ]);
+
+// $r->addRoute('GET', '/debug-roles', [
+//     'handler' => function() {
+//         $roleModel = new RoleModel();
+//         $roles = $roleModel->getAllRoles();
+//         header('Content-Type: application/json');
+//         echo json_encode($roles);
+//     }
+// ]);
+
+
+// $r->addRoute('GET', '/api/roles', [
+//     'handler' => function() {
+//         $roleModel = new Jeffrey\Educore\Models\RoleModel();
+//         header('Content-Type: application/json');
+//         echo json_encode($roleModel->getAllRoles());
+//     }
+// ]);
+
+// $r->addRoute('GET', '/api/schools', [
+//     'handler' => function() {
+//         $schoolModel = new Jeffrey\Educore\Models\SchoolModel();
+//         header('Content-Type: application/json');
+//         echo json_encode($schoolModel->getAllSchools());
+//     }
+// ]);

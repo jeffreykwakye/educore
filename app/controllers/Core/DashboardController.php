@@ -1,6 +1,6 @@
 <?php
 
-namespace Jeffrey\Educore\Controllers;
+namespace Jeffrey\Educore\Controllers\Core;
 
 use Jeffrey\Educore\Utils\Utils;
 
@@ -8,8 +8,6 @@ class DashboardController
 {
     public function showDashboard()
     {
-        session_start();
-
         if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
             header("Location: /login");
             exit;
@@ -36,7 +34,7 @@ class DashboardController
         }
 
         // Construct the full view path
-        $viewPath = __DIR__ . "/../../resources/views/dashboards/{$viewName}.html";
+        $viewPath = APP_ROOT . "/resources/views/dashboards/{$viewName}.html";
 
         // Call the reusable loadView method from the Utils class
         Utils::loadView($viewPath);
