@@ -27,67 +27,79 @@ EduCore is a multi-tenant School Management SaaS designed to streamline administ
 ```
 
 /educore
-|-- /app
-|   |-- /config               # Application configuration files
-|   |   |-- database.php
-|   |
-|   |-- /controllers          # Handles request logic and interacts with models/views
-|   |   |-- AuthController.php      <-- New
-|   |   |-- DashboardController.php   <-- New (placeholder)
-|   |   |-- HomeController.php
-|   |   |-- SchoolController.php
-|   |   |-- UserController.php
-|   |
-|   |-- /core                 # Core framework components
-|   |   |-- AppLogger.php
-|   |   |-- Database.php
-|   |   |-- Model.php
-|   |   |-- Router.php
-|   |
-|   |-- /middleware           # Middleware for request filtering
-|   |   |-- /School
-|   |   |   |-- SchoolValidationMiddleware.php
-|   |   |-- /User
-|   |   |   |-- AuthMiddleware.php        <-- New
-|   |   |   |-- AutoLogoutMiddleware.php  <-- New
-|   |   |   |-- LoginValidationMiddleware.php
-|   |
-|   |-- /models               # Handles database interactions
-|   |   |-- LoginAttemptModel.php   <-- New
-|   |   |-- UserModel.php
-|   |
-|   |-- /routes               # Defines application routes
-|   |   |-- routes.php
-|
-|-- /database
-|   |-- /migrations           # For future database migrations
-|   |-- /seeders              # For future database seeders
-|   |-- schema.sql            # Database schema
-|
-|-- /public                   # Web-accessible files
-|   |-- /css
-|   |-- /js
-|   |   |-- /school
-|   |   |   |-- register.js
-|   |   |-- /user
-|   |   |   |-- login.js          <-- New
-|   |-- index.php             # The application's entry point
-|   |-- .htaccess             # Apache rewrite rules
-|
-|-- /resources
-|   |-- /views                # HTML view files
-|   |   |-- login.html            <-- New
-|   |   |-- register.html
-|   |   |-- welcome.html
-|
-|-- /vendor                   # Composer dependencies
-|   |-- ...
-|
-|-- .env.example              # Example environment variables
-|-- .gitignore                # Specifies intentionally untracked files to ignore
-|-- composer.json             # Composer dependencies file
-|-- composer.lock             # Composer lock file
-|-- README.md                 # Project documentation
+├── /app
+│   ├── /config                    # Application configuration files
+│   │   └── database.php           # Database connection settings
+│   │
+│   ├── /controllers               # Handles request logic and interacts with models/views
+│   │   ├── Auth/
+│   │   │   ├── AuthController.php   # Handles user authentication (login/logout)
+│   │   │   └── UserController.php   # Handles user creation and related actions
+│   │   ├── Core/
+│   │   │   ├── DashboardController.php  # Handles the dashboard view and related logic
+│   │   │   └── HomeController.php
+│   │   └── School/
+│   │       └── SchoolController.php
+│   │
+│   ├── /core                      # Core framework components
+│   │   ├── AppLogger.php          # Singleton for logging application events
+│   │   ├── Database.php           # Singleton for managing the database connection
+│   │   ├── Middleware.php         # Abstract base class for all middleware
+│   │   ├── Model.php              # Abstract base class for all models
+│   │   └── Router.php             # Handles request routing and middleware execution
+│   │
+│   ├── /middleware                # Middleware for request filtering
+│   │   ├── /School
+│   │   │   └── SchoolValidationMiddleware.php # Validates school registration forms
+│   │   ├── /User
+│   │   │   ├── /Admin
+│   │   │   │   └── MasterAdminMiddleware.php  # Ensures user has master admin privileges
+│   │   │   ├── AuthMiddleware.php           # Protects routes by checking for an active session
+│   │   │   ├── AutoLogoutMiddleware.php     # Logs out inactive users
+│   │   │   └── LoginValidationMiddleware.php  # Validates user login forms
+│   │   │
+│   │   └── Middleware.php             # Base middleware file
+│   │
+│   ├── /models                    # Handles database interactions
+│   │   ├── LoginAttemptModel.php    # Manages login attempt tracking
+│   │   ├── RoleModel.php            # Manages user roles data
+│   │   ├── SchoolModel.php          # Manages schools data
+│   │   └── UserModel.php            # Manages user-related data
+│   │
+│   └── /routes                    # Defines application routes
+│       └── routes.php
+│
+├── /database
+│   └── schema.sql                 # Database schema
+│
+├── /public                        # Web-accessible files
+│   ├── /css
+│   ├── /js
+│   │   ├── /school
+│   │   │   └── register.js
+│   │   └── /user
+│   │       ├── login.js
+│   │       └── create-user.js      # Handles user creation form logic and API calls
+│   ├── index.php                  # The application's single entry point
+│   └── .htaccess                  # Apache rewrite rules
+│
+├── /resources
+│   ├── /views                     # All HTML view files
+│   │   ├── auth/
+│   │   │   ├── login.html           # User login page
+│   │   │   └── register_school.html # School registration page
+│   │   └── dashboards/
+│   │       └── ...                  # Templates for all user dashboards
+│   │
+│
+├── /vendor                        # Composer dependencies
+│   └── ...
+│
+├── .env.example                   # Example environment variables
+├── .gitignore                     # Specifies intentionally untracked files to ignore
+├── composer.json                  # Composer dependencies file
+├── composer.lock                  # Composer lock file
+└── README.md                      # Project documentation
 
 ````
 
