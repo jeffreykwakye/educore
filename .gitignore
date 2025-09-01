@@ -1,0 +1,34 @@
+# Composer dependencies
+/vendor/
+
+# Environment config
+.env
+.env.local
+.env.example
+
+# Logs and runtime
+/storage/logs/
+/storage/uploads/
+
+# IDE and OS artifacts
+*.log
+*.DS_Store
+*.idea/
+*.vscode/
+*.swp
+
+# Cache and temp
+.cache/
+.phpunit.result.cache
+
+# Node assets (if added later)
+node_modules/
+dist/
+build/
+
+# Database dumps
+*.sql
+*.sqlite
+
+# Coverage reports
+coverage/
