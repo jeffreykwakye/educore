@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Jeffrey\Educore\Controllers\Api\Dashboard;
 
 use Jeffrey\Educore\Services\Dashboard\DashboardService;
+use Jeffrey\Educore\Services\Dashboard\DashboardViewService;
+
 
 class DashboardApiController
 {
@@ -22,10 +24,25 @@ class DashboardApiController
         $type = $service->getDashboardType($userId);
 
         if ($type) {
+
+            $viewService = new DashboardViewService();
+
+            switch ($type) {
+                case 'master_admin':
+                    $view = $viewService->getMasterAdminView($userId);
+                    break;
+                default:
+                    http_response_code(403);
+                    echo json_encode(['error' => 'Dashboard type not supported']);
+                    return;
+            }
+
             echo json_encode([
                 'status' => 'success',
-                'dashboard' => $type
+                'dashboard' => $type,
+                'data' => $view
             ]);
+
         } else {
             http_response_code(403);
             echo json_encode([
