@@ -22,9 +22,10 @@ class DashboardService
 
         foreach ($permissions as $perm) {
             if (str_starts_with($perm, 'view.dashboard.')) {
-                return explode('.', $perm)[2]; // returns 'master', 'school', etc.
+                return substr($perm, strlen('view.dashboard.')); // returns 'master_admin', 'teacher', etc.
             }
         }
+
 
         return null;
     }
