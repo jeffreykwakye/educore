@@ -53,14 +53,19 @@ class Router
     private function handleWithMiddleware(array $middleware, callable $callback): void
     {
         $chain = $callback;
-        foreach (array_reverse($middleware) as $middlewareClass) {
-            $chain = function () use ($middlewareClass, $chain) {
-                $instance = is_object($middlewareClass) ? $middlewareClass : new $middlewareClass();
-                if ($instance->handle()) {
+
+        foreach (array_reverse($middleware) as $mw) {
+            $chain = function () use ($mw, $chain) {
+                $class = $mw['class'];
+                $method = $mw['method'];
+                $args = $mw['args'] ?? [];
+
+                if (call_user_func_array([$class, $method], $args)) {
                     $chain();
                 }
             };
         }
+
         $chain();
     }
 

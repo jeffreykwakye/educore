@@ -8,6 +8,8 @@ use Jeffrey\Educore\Controllers\Core\HomeController;
 use Jeffrey\Educore\Controllers\Api\RBAC\RolePermissionApiController;
 use Jeffrey\Educore\Controllers\Api\Users\UserApiController;
 use Jeffrey\Educore\Controllers\Api\Auth\LoginApiController;
+use Jeffrey\Educore\Middleware\Auth\AuthMiddleware;
+use Jeffrey\Educore\Middleware\RBAC\PermissionMiddleware;
 
 
 $r->addRoute('GET', '/', [
@@ -24,12 +26,26 @@ $r->addRoute('POST', '/api/role-permissions', [
 
 $r->addRoute('POST', '/api/users', [
     'handler' => [UserApiController::class, 'createUser'],
-    'middleware' => [] // Add AuthMiddleware later
+    'middleware' => [
+        [
+            'class' => AuthMiddleware::class,
+            'method' => 'handle',
+            'args' => []
+        ],
+        [
+            'class' => PermissionMiddleware::class,
+            'method' => 'handle',
+            'args' => ['user.create']
+        ]
+    ]
 ]);
-
-
 
 $r->addRoute('POST', '/api/login', [
     'handler' => [LoginApiController::class, 'login'],
     'middleware' => [] // Add rate limiting or lockout logic later
 ]);
+
+
+
+
+
