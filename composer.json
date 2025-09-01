@@ -1,0 +1,23 @@
+{
+    "name": "jeffrey/educore",
+    "description": "Modular School Management SaaS",
+    "type": "project",
+    "require": {
+        "nikic/fast-route": "^1.3",
+        "monolog/monolog": "^3.9",
+        "predis/predis": "^3.2"
+    },
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Jeffrey\\Educore\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jeffreykwakye",
+            "email": "oparejeffrey@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
