@@ -15,6 +15,8 @@ class RolePermissionService
      * Assign the given permission names to the role.
      * - Clears existing links for the role.
      * - Inserts only permissions that exist by name.
+     * 
+     * Skips unknown names silently  — consider logging or throwing in future.
      *
      * @param int   $roleId
      * @param array $permissionNames e.g. ["user.create","user.read"]

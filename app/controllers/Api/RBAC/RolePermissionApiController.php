@@ -6,10 +6,21 @@ use Jeffrey\Educore\Services\RBAC\RolePermissionService;
 
 class RolePermissionApiController
 {
+    /**
+     * Assigns named permissions to a role.
+     *
+     * Expects payload:
+     * {
+     *   "role_id": int,
+     *   "permissions": [ "view.dashboard.master_admin", ... ]
+     * }
+     *
+     * Note: Permissions must be passed as names, not IDs.
+     */
     public function assignPermissionsToRole(): void
     {
         $input = json_decode(file_get_contents('php://input'), true);
-
+        
         $roleId = $input['role_id'] ?? null;
         $permissions = $input['permissions'] ?? [];
 

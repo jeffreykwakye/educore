@@ -8,6 +8,10 @@ use Jeffrey\Educore\Controllers\Core\HomeController;
 use Jeffrey\Educore\Controllers\Api\RBAC\RolePermissionApiController;
 use Jeffrey\Educore\Controllers\Api\Users\UserApiController;
 use Jeffrey\Educore\Controllers\Api\Auth\LoginApiController;
+use Jeffrey\Educore\Controllers\Api\Dashboard\DashboardApiController;
+
+
+// Middleware
 use Jeffrey\Educore\Middleware\Auth\AuthMiddleware;
 use Jeffrey\Educore\Middleware\RBAC\PermissionMiddleware;
 
@@ -15,6 +19,19 @@ use Jeffrey\Educore\Middleware\RBAC\PermissionMiddleware;
 $r->addRoute('GET', '/', [
     'handler' => [HomeController::class, 'index']
 ]);
+
+
+$r->addRoute('GET', '/api/dashboard', [
+    'handler' => [DashboardApiController::class, 'routeDashboard'],
+    'middleware' => [
+        [
+            'class' => AuthMiddleware::class,
+            'method' => 'handle',
+            'args' => []
+        ]
+    ]
+]);
+
 
 
 // API POST Routes
