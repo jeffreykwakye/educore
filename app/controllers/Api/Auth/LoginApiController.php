@@ -3,34 +3,48 @@ declare(strict_types=1);
 
 namespace Jeffrey\Educore\Controllers\Api\Auth;
 
-use Jeffrey\Educore\Services\Auth\LoginService;
+use Jeffrey\Educore\Core\Database;
+use Jeffrey\Educore\Services\Auth\SessionService;
 
 class LoginApiController
 {
     public function login(): void
     {
-        $input = json_decode(file_get_contents('php://input'), true);
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        $phone = $input['phone_number'] ?? null;
+        $password = $input['password'] ?? null;
 
-        if (empty($input['phone_number']) || empty($input['password'])) {
+        if (!$phone || !$password) {
             http_response_code(400);
-            echo json_encode(['error' => 'Missing credentials']);
+            echo json_encode(['error' => 'Phone number and password are required']);
             return;
         }
 
-        $service = new LoginService();
-        $user = $service->attempt($input['phone_number'], $input['password']);
 
-        if ($user) {
-            echo json_encode([
-                'status' => 'success',
-                'user' => $user
-            ]);
-        } else {
+        $db = Database::getInstance()->getConnection();
+
+        $stmt = $db->prepare("SELECT id, password_hash FROM users WHERE phone_number = :phone LIMIT 1");
+        $stmt->execute(['phone' => $phone]);
+
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$user || !password_verify($password, $user['password_hash'])) {
             http_response_code(401);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Invalid credentials'
-            ]);
+            echo json_encode(['error' => 'Invalid credentials']);
+            return;
         }
+
+        $service = new SessionService();
+        $session = $service->createSession(
+            (int)$user['id'],
+            $_SERVER['HTTP_USER_AGENT'] ?? null,
+            $_SERVER['REMOTE_ADDR'] ?? null
+        );
+
+        echo json_encode([
+            'status' => 'success',
+            'token' => $session['token'],
+            'expires_at' => $session['expires_at']
+        ]);
     }
 }
