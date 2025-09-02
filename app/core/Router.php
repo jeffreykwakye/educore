@@ -60,14 +60,20 @@ class Router
                 $method = $mw['method'];
                 $args = $mw['args'] ?? [];
 
-                if (call_user_func_array([$class, $method], $args)) {
+                $result = call_user_func_array([$class, $method], $args);
+
+                if ($result === true) {
                     $chain();
+                } else {
+                    http_response_code(401);
+                    echo json_encode(['error' => 'Unauthorized']);
                 }
             };
         }
 
         $chain();
     }
+
 
     private function dispatchToHandler($handler, array $vars): void
     {

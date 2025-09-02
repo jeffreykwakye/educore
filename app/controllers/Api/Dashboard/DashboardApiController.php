@@ -5,14 +5,13 @@ namespace Jeffrey\Educore\Controllers\Api\Dashboard;
 
 use Jeffrey\Educore\Services\Dashboard\DashboardService;
 use Jeffrey\Educore\Services\Dashboard\DashboardViewService;
-
+use Jeffrey\Educore\Core\RequestContext;
 
 class DashboardApiController
 {
     public function routeDashboard(): void
     {
-        $headers = getallheaders();
-        $userId = (int)($headers['X-User-ID'] ?? 0);
+        $userId = RequestContext::$userId ?? 0;
 
         if (!$userId) {
             http_response_code(401);
@@ -24,7 +23,6 @@ class DashboardApiController
         $type = $service->getDashboardType($userId);
 
         if ($type) {
-
             $viewService = new DashboardViewService();
 
             switch ($type) {
@@ -42,7 +40,6 @@ class DashboardApiController
                 'dashboard' => $type,
                 'data' => $view
             ]);
-
         } else {
             http_response_code(403);
             echo json_encode([

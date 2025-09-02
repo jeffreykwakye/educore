@@ -8,6 +8,7 @@ use Jeffrey\Educore\Controllers\Core\HomeController;
 use Jeffrey\Educore\Controllers\Api\RBAC\RolePermissionApiController;
 use Jeffrey\Educore\Controllers\Api\Users\UserApiController;
 use Jeffrey\Educore\Controllers\Api\Auth\LoginApiController;
+use Jeffrey\Educore\Controllers\Api\Auth\LogoutApiController;
 use Jeffrey\Educore\Controllers\Api\Dashboard\DashboardApiController;
 
 
@@ -60,6 +61,17 @@ $r->addRoute('POST', '/api/users', [
 $r->addRoute('POST', '/api/login', [
     'handler' => [LoginApiController::class, 'login'],
     'middleware' => [] // Add rate limiting or lockout logic later
+]);
+
+$r->addRoute('POST', '/api/logout', [
+    'handler' => [LogoutApiController::class, 'logout'],
+    'middleware' => [
+        [
+            'class' => AuthMiddleware::class,
+            'method' => 'handle',
+            'args' => []
+        ]
+    ]
 ]);
 
 
