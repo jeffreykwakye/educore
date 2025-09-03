@@ -120,8 +120,22 @@ class SessionApiController
                 'revoked_count' => $count,
                 'kept_current' => $keepCurrent
             ]);
+
+        } elseif (in_array('revoke.sessions.own', $perms, true)) {
+            // New branch for restricted users revoking their own sessions
+            $keepCurrent = (bool)($input['keep_current'] ?? false);
+            $exceptToken = $keepCurrent ? (RequestContext::$token ?? null) : null;
+            $count = $service->revokeAllSessions($userId, $exceptToken);
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Own sessions revoked',
+                'revoked_count' => $count,
+                'kept_current' => $keepCurrent
+            ]);
+
+        } else {
+            $this->errorResponse(403, 'Forbidden');
         }
-
-
     }
 }
