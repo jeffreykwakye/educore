@@ -1,4 +1,5 @@
-<?php
+<?php 
+declare(strict_types=1);
 
 namespace Jeffrey\Educore\Core;
 
@@ -9,10 +10,21 @@ class Router
 {
     private $dispatcher;
 
-    public function __construct(string $routesFile)
+    /**
+     * Accept one or more route file paths.
+     */
+    public function __construct(string ...$routesFiles)
     {
-        $this->dispatcher = \FastRoute\simpleDispatcher(function (RouteCollector $r) use ($routesFile) {
-            require $routesFile;
+        $this->dispatcher = \FastRoute\simpleDispatcher(function (RouteCollector $r) use ($routesFiles) {
+            foreach ($routesFiles as $file) {
+                if (file_exists($file)) {
+                    // Make $r available inside the route file
+                    $GLOBALS['r'] = $r;
+                    require $file;
+                } else {
+                    throw new \RuntimeException("Routes file not found: {$file}");
+                }
+            }
         });
     }
 
@@ -73,7 +85,6 @@ class Router
 
         $chain();
     }
-
 
     private function dispatchToHandler($handler, array $vars): void
     {
