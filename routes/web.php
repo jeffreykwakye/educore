@@ -10,6 +10,7 @@ use Jeffrey\Educore\Controllers\Api\Users\UserApiController;
 use Jeffrey\Educore\Controllers\Api\Auth\LoginApiController;
 use Jeffrey\Educore\Controllers\Api\Auth\LogoutApiController;
 use Jeffrey\Educore\Controllers\Api\Dashboard\DashboardApiController;
+use Jeffrey\Educore\Controllers\Api\Auth\SessionApiController;
 
 
 // Middleware
@@ -32,6 +33,31 @@ $r->addRoute('GET', '/api/dashboard', [
         ]
     ]
 ]);
+
+
+$r->addRoute('GET', '/api/sessions', [
+    'handler' => [SessionApiController::class, 'listActive'],
+    'middleware' => [
+        ['class' => AuthMiddleware::class, 'method' => 'handle', 'args' => []],
+    ],
+]);
+
+$r->addRoute('POST', '/api/sessions/revoke', [
+    'handler' => [SessionApiController::class, 'revokeOne'],
+    'middleware' => [
+        ['class' => AuthMiddleware::class, 'method' => 'handle', 'args' => []],
+    ],
+]);
+
+$r->addRoute('POST', '/api/sessions/revoke-all', [
+    'handler' => [SessionApiController::class, 'revokeAll'],
+    'middleware' => [
+        ['class' => AuthMiddleware::class, 'method' => 'handle', 'args' => []],
+    ],
+]);
+
+
+
 
 
 

@@ -87,4 +87,42 @@ class RolePermissionService
             return false;
         }
     }
+
+
+
+    public function roleHasPermission(int $roleId, string $permissionName): bool
+    {
+        $db = Database::getInstance()->getConnection();
+
+        $stmt = $db->prepare("
+            SELECT COUNT(*) 
+            FROM role_permissions rp
+            INNER JOIN permissions p ON rp.permission_id = p.id
+            WHERE rp.role_id = :role_id
+            AND p.name = :perm_name
+            LIMIT 1
+        ");
+        $stmt->execute([
+            'role_id' => $roleId,
+            'perm_name' => $permissionName
+        ]);
+
+        return (bool)$stmt->fetchColumn();
+    }
+
+
+    public function getPermissionsForRole(int $roleId): array
+    {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("
+            SELECT p.name
+            FROM role_permissions rp
+            INNER JOIN permissions p ON rp.permission_id = p.id
+            WHERE rp.role_id = :role_id
+        ");
+        
+        $stmt->execute(['role_id' => $roleId]);
+        return array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'name');
+    }
+
 }
